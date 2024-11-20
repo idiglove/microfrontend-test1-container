@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import MicroFrontend from "./MicroFrontend";
+import MicroFrontend, { Version } from "./MicroFrontend";
 
 // const router = createBrowserRouter([
 //   {
@@ -20,25 +20,48 @@ const React16App = () => {
 const React18App = () => {
   const react18AppHost = env.react18AppHost;
   if (react18AppHost) {
-    return <MicroFrontend host={react18AppHost} name="React18" version='react18' />;
+    return (
+      <MicroFrontend
+        host={react18AppHost}
+        name="React18"
+        version={Version.React18}
+      />
+    );
+  }
+  return null;
+};
+
+const VueNavApp = () => {
+  const vueNavAppHost = env.vueNavAppHost;
+  if (vueNavAppHost) {
+    return (
+      <MicroFrontend
+        host={vueNavAppHost}
+        name="VueNav"
+        version={Version.VueNav}
+      />
+    );
   }
   return null;
 };
 
 function App() {
   return (
-    <RouterProvider
-      router={createBrowserRouter([
-        {
-          path: "/",
-          element: React16App(),
-        },
-        {
-          path: "/react18",
-          element: React18App(),
-        },
-      ])}
-    />
+    <>
+      <VueNavApp />
+      <RouterProvider
+        router={createBrowserRouter([
+          {
+            path: "/",
+            element: React16App(),
+          },
+          {
+            path: "/react18",
+            element: React18App(),
+          },
+        ])}
+      />
+    </>
   );
 }
 

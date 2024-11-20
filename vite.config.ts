@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
       env: {
         react16AppHost: env.VITE_REACT_16_APP,
         react18AppHost: env.VITE_REACT_18_APP,
+        vueNavAppHost: env.VITE_VUE_NAV_APP,
       },
     },
   };

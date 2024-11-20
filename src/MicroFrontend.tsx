@@ -6,9 +6,10 @@ interface MicroFrontendProps {
   version: Version;
 }
 
-enum Version {
+export enum Version {
   React16 = "react16",
   React18 = "react18",
+  VueNav = "vueNav",
 }
 
 const MicroFrontend = ({ host, name, version }: MicroFrontendProps) => {
@@ -23,6 +24,16 @@ const MicroFrontend = ({ host, name, version }: MicroFrontendProps) => {
     if (document.getElementById(scriptName)) {
       renderMicroFrontend(name);
       return;
+    }
+
+    if (version === Version.VueNav) {
+      const script = document.createElement("script");
+      script.id = scriptName;
+      // @TODO: what is this for?
+      script.crossOrigin = "";
+      script.src = `${host}/vue-bundle.js`;
+      script.onload = () => window[`renderVueNav`](`#VueNav-container`);
+      document.head.appendChild(script);
     }
 
     if (version === Version.React18) {
@@ -47,9 +58,7 @@ const MicroFrontend = ({ host, name, version }: MicroFrontendProps) => {
           document.head.appendChild(script);
         });
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [host, name, version]);
 
   return (
     <>
