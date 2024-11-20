@@ -17,6 +17,14 @@ const React16App = () => {
   return null;
 };
 
+const React18App = () => {
+  const react18AppHost = env.react18AppHost;
+  if (react18AppHost) {
+    return <MicroFrontend host={react18AppHost} name="React18" version='react18' />;
+  }
+  return null;
+};
+
 function App() {
   return (
     <RouterProvider
@@ -24,6 +32,10 @@ function App() {
         {
           path: "/",
           element: React16App(),
+        },
+        {
+          path: "/react18",
+          element: React18App(),
         },
       ])}
     />

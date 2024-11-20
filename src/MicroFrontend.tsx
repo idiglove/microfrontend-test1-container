@@ -3,9 +3,15 @@ import { useEffect } from "react";
 interface MicroFrontendProps {
   host: string;
   name: string;
+  version: Version;
 }
 
-const MicroFrontend = ({ host, name }: MicroFrontendProps) => {
+enum Version {
+  React16 = "react16",
+  React18 = "react18",
+}
+
+const MicroFrontend = ({ host, name, version }: MicroFrontendProps) => {
   const renderMicroFrontend = (name: string) => {
     console.log({ name });
     window[`render${name}`](`${name}-container`, history);
@@ -19,18 +25,28 @@ const MicroFrontend = ({ host, name }: MicroFrontendProps) => {
       return;
     }
 
-    fetch(`${host}/asset-manifest.json`)
-      .then((res) => res.json())
-      .then((manifest) => {
-        console.log({ manifest });
-        const script = document.createElement("script");
-        script.id = scriptName;
-        // @TODO: what is this for?
-        script.crossOrigin = "";
-        script.src = `${host}${manifest.files["main.js"]}`;
-        script.onload = () => renderMicroFrontend(name);
-        document.head.appendChild(script);
-      });
+    if (version === Version.React18) {
+      const script = document.createElement("script");
+      script.id = scriptName;
+      // @TODO: what is this for?
+      script.crossOrigin = "";
+      script.src = `${host}/bundle.js`;
+      script.onload = () => renderMicroFrontend(name);
+      document.head.appendChild(script);
+    } else {
+      fetch(`${host}/asset-manifest.json`)
+        .then((res) => res.json())
+        .then((manifest) => {
+          console.log({ manifest });
+          const script = document.createElement("script");
+          script.id = scriptName;
+          // @TODO: what is this for?
+          script.crossOrigin = "";
+          script.src = `${host}${manifest.files["main.js"]}`;
+          script.onload = () => renderMicroFrontend(name);
+          document.head.appendChild(script);
+        });
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
